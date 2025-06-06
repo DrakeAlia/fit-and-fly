@@ -8,7 +8,8 @@ interface DialogProps {
   children: React.ReactNode
 }
 
-const Dialog: React.FC<DialogProps> = ({ open, onOpenChange, children }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Dialog: React.FC<DialogProps> = ({ open, onOpenChange: _onOpenChange, children }) => {
   return (
     <>
       {open && (

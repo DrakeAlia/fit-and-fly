@@ -104,7 +104,7 @@ const StatsTab = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">Today's Progress</CardTitle>
+            <CardTitle className="text-center">Today&apos;s Progress</CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center">
             <CircularProgress
@@ -245,7 +245,7 @@ const StatsTab = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-7 gap-2">
-            {tripData.slice(0, 7).map((day, index) => {
+            {tripData.slice(0, 7).map((day) => {
               const dayCalorieProgress = (day.totalCalories / userProfile.calorieGoal) * 100
               const dayProteinProgress = (day.totalProtein / userProfile.proteinGoal) * 100
               

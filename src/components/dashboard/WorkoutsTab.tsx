@@ -2,9 +2,14 @@
 
 import React from 'react'
 import { useAppStore } from '@/lib/store'
+import type { Exercise, Equipment, Workout } from '@/lib/schemas'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronUp, Clock, Zap, Play, Dumbbell } from 'lucide-react'
+
+interface WorkoutWithDates extends Workout {
+  dates: string[]
+}
 
 const WorkoutsTab = () => {
   const { tripData, expandedWorkout, setExpandedWorkout } = useAppStore()
@@ -22,7 +27,7 @@ const WorkoutsTab = () => {
       existingWorkout.dates.push(day.date)
     }
     return acc
-  }, [] as any[])
+  }, [] as WorkoutWithDates[])
 
   const toggleWorkout = (workoutId: string) => {
     setExpandedWorkout(expandedWorkout === workoutId ? null : workoutId)
@@ -94,7 +99,7 @@ const WorkoutsTab = () => {
                       Exercises ({workout.exercises.length})
                     </h4>
                     <div className="space-y-3">
-                      {workout.exercises.map((exercise, index) => (
+                      {workout.exercises.map((exercise: Exercise, index: number) => (
                         <div key={exercise.id} className="bg-gray-50 p-4 rounded-lg">
                           <div className="flex items-start gap-3">
                             <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-1">
@@ -118,7 +123,7 @@ const WorkoutsTab = () => {
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <h4 className="font-semibold text-blue-900 mb-2">Equipment Needed</h4>
                     <div className="flex flex-wrap gap-2">
-                      {workout.equipment.map((eq) => (
+                      {workout.equipment.map((eq: Equipment) => (
                         <span
                           key={eq}
                           className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm capitalize"
