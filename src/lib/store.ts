@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { getRegionFromDestination, getRegionalMeals } from './regionalCuisine'
 import type { 
   Equipment, 
   FitnessGoal, 
   Meal, 
-  Exercise, 
   Workout, 
   DayData, 
   UserProfile,
@@ -41,6 +41,7 @@ interface AppState {
   openMealModal: (dayId: string, mealId: string) => void
   closeMealModal: () => void
   generateTripData: (profile: UserProfile) => void
+  resetApp: () => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -98,11 +99,11 @@ export const useAppStore = create<AppState>()(
   
   generateTripData: (profile) => {
     const days = getDaysBetween(profile.startDate, profile.endDate)
-    const tripData: DayData[] = days.map((date, index) => ({
+    const tripData: DayData[] = days.map((date) => ({
       date,
       weather: generateWeatherData(),
-      workout: generateWorkoutData(profile.availableEquipment, profile.fitnessGoals),
-      meals: generateMealsData(),
+      workout: generateWorkoutData(),
+      meals: generateMealsData(profile.destination),
       totalCalories: 0,
       totalProtein: 0
     }))
@@ -114,7 +115,19 @@ export const useAppStore = create<AppState>()(
     })
     
     set({ tripData })
-  }
+  },
+  
+  resetApp: () => set({
+    onboardingStep: 0,
+    isOnboardingComplete: false,
+    userProfile: null,
+    currentTab: 'itinerary',
+    selectedDay: '',
+    tripData: [],
+    expandedWorkout: null,
+    isMealModalOpen: false,
+    selectedMealForEdit: null,
+  })
 }),
     {
       name: 'fit-and-fly-storage',
@@ -153,7 +166,7 @@ function generateWeatherData(): Weather {
   }
 }
 
-function generateWorkoutData(equipment: Equipment[], goals: FitnessGoal[]): Workout {
+function generateWorkoutData(): Workout {
   const workouts: Record<string, Workout> = {
     'bodyweight-strength': {
       id: 'bodyweight-1',
@@ -192,8 +205,17 @@ function generateWorkoutData(equipment: Equipment[], goals: FitnessGoal[]): Work
   }
 }
 
-function generateMealsData(): Meal[] {
-  const mealOptions = {
+function generateMealsData(destination?: string): Meal[] {
+  // Determine region from destination
+  const region = destination ? getRegionFromDestination(destination) : 'International'
+  const regionalCuisine = getRegionalMeals(region)
+  
+  // If no regional cuisine found, use default international
+  const mealOptions = regionalCuisine ? {
+    breakfast: regionalCuisine.breakfast,
+    lunch: regionalCuisine.lunch,
+    dinner: regionalCuisine.dinner
+  } : {
     breakfast: [
       { name: 'Overnight Oats with Berries', calories: 320, protein: 12 },
       { name: 'Greek Yogurt Parfait', calories: 280, protein: 20 },

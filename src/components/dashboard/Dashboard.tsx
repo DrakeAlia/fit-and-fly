@@ -5,17 +5,29 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Calendar, Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { MapPin, Calendar, Sparkles, RotateCcw } from 'lucide-react'
 import ItineraryTab from './ItineraryTab'
 import StatsTab from './StatsTab'
 import WorkoutsTab from './WorkoutsTab'
 
 const Dashboard = () => {
-  const { userProfile, currentTab, setCurrentTab } = useAppStore()
+  const { userProfile, currentTab, setCurrentTab, resetApp } = useAppStore()
+  const [showResetDialog, setShowResetDialog] = React.useState(false)
 
   if (!userProfile) return null
 
   const tripDays = Math.ceil((new Date(userProfile.endDate).getTime() - new Date(userProfile.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1
+
+  const handleTitleClick = () => {
+    setShowResetDialog(true)
+  }
+
+  const handleResetConfirm = () => {
+    resetApp()
+    setShowResetDialog(false)
+  }
 
   // Animation variants
   const containerVariants = {
@@ -66,8 +78,11 @@ const Dashboard = () => {
             variants={itemVariants}
           >
             <motion.div
-              className="flex items-center gap-3 mb-4 sm:mb-0"
+              className="flex items-center gap-3 mb-4 sm:mb-0 cursor-pointer"
               whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleTitleClick}
+              title="Click to start over"
             >
               <Sparkles className="h-8 w-8 text-purple-600" />
               <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -226,6 +241,35 @@ const Dashboard = () => {
           </Tabs>
         </motion.div>
       </div>
+
+      {/* Reset Confirmation Dialog */}
+      <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+        <DialogContent onClose={() => setShowResetDialog(false)}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <RotateCcw className="h-5 w-5 text-orange-500" />
+              Start Over?
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-gray-600">
+              Are you sure you want to start over? This will reset your trip planning and take you back to the beginning.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setShowResetDialog(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleResetConfirm}
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Start Over
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }

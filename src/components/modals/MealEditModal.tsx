@@ -3,19 +3,21 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/lib/store'
+import { getRegionFromDestination, getRegionalMeals } from '@/lib/regionalCuisine'
 import type { Meal } from '@/lib/schemas'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Sparkles, ChefHat, Zap, TrendingUp, TrendingDown } from 'lucide-react'
+import { Sparkles, ChefHat, Zap, TrendingUp, TrendingDown, MapPin } from 'lucide-react'
 
 const MealEditModal = () => {
   const {
     isMealModalOpen,
     selectedMealForEdit,
     tripData,
+    userProfile,
     closeMealModal,
     updateMeal
   } = useAppStore()
@@ -33,6 +35,7 @@ const MealEditModal = () => {
     if (isMealModalOpen && currentMeal) {
       generateAISuggestions(currentMeal)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMealModalOpen, currentMeal])
 
   const generateAISuggestions = async (meal: Meal) => {
@@ -49,7 +52,18 @@ const MealEditModal = () => {
   }
 
   const generateMealSuggestions = (currentMeal: Meal): Meal[] => {
-    const suggestionsByType = {
+    // Get regional cuisine based on user's destination
+    const destination = userProfile?.destination || ''
+    const region = getRegionFromDestination(destination)
+    const regionalCuisine = getRegionalMeals(region)
+    
+    // Use regional cuisine if available, fallback to international
+    const suggestionsByType = regionalCuisine ? {
+      breakfast: regionalCuisine.breakfast,
+      lunch: regionalCuisine.lunch,
+      dinner: regionalCuisine.dinner,
+      snack: regionalCuisine.snacks
+    } : {
       breakfast: [
         { name: 'Protein Smoothie Bowl', calories: 340, protein: 25 },
         { name: 'Egg White Scramble', calories: 180, protein: 20 },
@@ -138,15 +152,28 @@ const MealEditModal = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              >
-                <Sparkles className="h-4 w-4 text-purple-500" />
-              </motion.div>
-              AI-Powered Suggestions
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold flex items-center gap-2">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="h-4 w-4 text-purple-500" />
+                </motion.div>
+                AI-Powered Suggestions
+              </h3>
+              {userProfile?.destination && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex items-center gap-1 text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 px-3 py-1 rounded-full"
+                >
+                  <MapPin className="h-3 w-3" />
+                  {getRegionFromDestination(userProfile.destination)} Cuisine
+                </motion.div>
+              )}
+            </div>
             
             <AnimatePresence mode="wait">
               {isLoading ? (
