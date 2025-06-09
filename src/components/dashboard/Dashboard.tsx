@@ -70,7 +70,7 @@ const Dashboard = () => {
       animate="visible"
       className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50"
     >
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl">
         {/* Header */}
         <motion.div variants={itemVariants} className="mb-8">
           <motion.div 
@@ -78,14 +78,14 @@ const Dashboard = () => {
             variants={itemVariants}
           >
             <motion.div
-              className="flex items-center gap-3 mb-4 sm:mb-0 cursor-pointer"
+              className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-0 cursor-pointer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleTitleClick}
               title="Click to start over"
             >
-              <Sparkles className="h-8 w-8 text-purple-600" />
-              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Fit & Fly
               </h1>
             </motion.div>
@@ -120,14 +120,14 @@ const Dashboard = () => {
           
           <motion.div 
             variants={itemVariants}
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border-0"
+            className="bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 shadow-lg border-0"
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
               <motion.div variants={statsVariants}>
                 <motion.div 
-                  className="text-3xl font-bold text-blue-600 mb-1"
+                  className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
@@ -139,7 +139,7 @@ const Dashboard = () => {
               
               <motion.div variants={statsVariants}>
                 <motion.div 
-                  className="text-3xl font-bold text-green-600 mb-1"
+                  className="text-2xl sm:text-3xl font-bold text-green-600 mb-1"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
@@ -151,7 +151,7 @@ const Dashboard = () => {
               
               <motion.div variants={statsVariants}>
                 <motion.div 
-                  className="text-3xl font-bold text-purple-600 mb-1"
+                  className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
@@ -236,6 +236,7 @@ const Dashboard = () => {
                 <TabsContent value="workouts">
                   <WorkoutsTab />
                 </TabsContent>
+                
               </motion.div>
             </AnimatePresence>
           </Tabs>

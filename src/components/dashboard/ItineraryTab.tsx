@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Cloud, Sun, CloudRain, Zap, Edit3, Clock, Utensils } from 'lucide-react'
+import HabitsTracker from '@/components/habits/HabitsTracker'
 
 const ItineraryTab = () => {
   const { tripData, selectedDay, setSelectedDay, openMealModal } = useAppStore()
@@ -77,11 +78,11 @@ const ItineraryTab = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6"
     >
       {/* Day selector */}
       <motion.div 
-        className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+        className="flex gap-1 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide px-1 swipe-hint"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -98,7 +99,7 @@ const ItineraryTab = () => {
             <Button
               variant={selectedDay === day.date ? "default" : "outline"}
               onClick={() => setSelectedDay(day.date)}
-              className={`flex-shrink-0 min-w-[3rem] ${
+              className={`flex-shrink-0 min-w-[2.5rem] sm:min-w-[3rem] h-8 sm:h-10 text-sm sm:text-base ${
                 selectedDay === day.date 
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 shadow-lg" 
                   : "hover:border-blue-300 hover:bg-blue-50"
@@ -157,7 +158,7 @@ const ItineraryTab = () => {
             </motion.div>
 
             <motion.div 
-              className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, staggerChildren: 0.1 }}
@@ -315,6 +316,17 @@ const ItineraryTab = () => {
                     </div>
                   </CardContent>
                 </Card>
+              </motion.div>
+
+              {/* Habits Tracker */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 }}
+                whileHover={{ y: -5 }}
+                className="xl:col-span-1 md:col-span-2"
+              >
+                <HabitsTracker date={selectedDay} className="h-full bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-shadow" />
               </motion.div>
             </motion.div>
           </motion.div>

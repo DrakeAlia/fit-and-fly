@@ -1,18 +1,22 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useAppStore } from '@/lib/store'
+import WorkoutSession from '@/components/workout/WorkoutSession'
 import type { Exercise, Equipment, Workout } from '@/lib/schemas'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronDown, ChevronUp, Clock, Zap, Play, Dumbbell } from 'lucide-react'
+import { ChevronDown, ChevronUp, Clock, Zap, Play, Dumbbell, Calendar } from 'lucide-react'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 
 interface WorkoutWithDates extends Workout {
   dates: string[]
 }
 
 const WorkoutsTab = () => {
-  const { tripData, expandedWorkout, setExpandedWorkout } = useAppStore()
+  const { tripData, expandedWorkout, setExpandedWorkout, selectedDay, workoutSessions } = useAppStore()
+  const [workoutSessionOpen, setWorkoutSessionOpen] = useState(false)
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null)
 
   if (!tripData.length) return <div>Loading...</div>
 
@@ -39,11 +43,26 @@ const WorkoutsTab = () => {
     ).join(', ')
   }
 
+  const handleStartWorkout = (workout: Workout, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setSelectedWorkout(workout)
+    setWorkoutSessionOpen(true)
+  }
+
+  const handleCloseWorkoutSession = () => {
+    setWorkoutSessionOpen(false)
+    setSelectedWorkout(null)
+  }
+
+  const getWorkoutHistory = (workoutId: string) => {
+    return workoutSessions.filter(session => session.workoutId === workoutId)
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Workout Plan</h2>
-        <p className="text-gray-600">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="text-center mb-4 sm:mb-6 px-2">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Your Workout Plan</h2>
+        <p className="text-gray-600 text-sm sm:text-base">
           Customized workouts based on your goals and available equipment
         </p>
       </div>
@@ -56,13 +75,13 @@ const WorkoutsTab = () => {
               onClick={() => toggleWorkout(workout.id)}
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <Dumbbell className="h-5 w-5 text-blue-600" />
+                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                  <div className="bg-blue-100 p-1.5 sm:p-2 rounded-lg">
+                    <Dumbbell className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                   </div>
-                  <div>
-                    <CardTitle className="text-lg">{workout.name}</CardTitle>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-base sm:text-lg truncate">{workout.name}</CardTitle>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 mt-1">
                       <span className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
                         {workout.duration} min
@@ -70,16 +89,21 @@ const WorkoutsTab = () => {
                       <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                         {workout.type}
                       </span>
-                      <span className="text-xs">
+                      <span className="text-xs hidden sm:inline">
                         Scheduled: {formatDates(workout.dates)}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button size="sm" className="flex items-center gap-2">
-                    <Play className="h-4 w-4" />
-                    Start Workout
+                <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                  <Button 
+                    size="sm" 
+                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3"
+                    onClick={(e) => handleStartWorkout(workout, e)}
+                  >
+                    <Play className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Start Workout</span>
+                    <span className="sm:hidden">Start</span>
                   </Button>
                   {expandedWorkout === workout.id ? (
                     <ChevronUp className="h-5 w-5 text-gray-400" />
@@ -134,8 +158,35 @@ const WorkoutsTab = () => {
                     </div>
                   </div>
                   
+                  {/* Workout History */}
+                  {getWorkoutHistory(workout.id).length > 0 && (
+                    <div className="bg-green-50 p-4 rounded-lg mb-4">
+                      <h4 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Recent Sessions
+                      </h4>
+                      <div className="space-y-2">
+                        {getWorkoutHistory(workout.id).slice(-3).map((session) => (
+                          <div key={session.id} className="text-sm text-green-800 bg-green-100 p-2 rounded">
+                            <div className="flex items-center justify-between">
+                              <span>{new Date(session.date).toLocaleDateString()}</span>
+                              <span>{session.totalDuration} minutes</span>
+                            </div>
+                            {session.completed && (
+                              <span className="text-xs text-green-600">✓ Completed</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="flex gap-3 mt-4">
-                    <Button className="flex-1" size="lg">
+                    <Button 
+                      className="flex-1" 
+                      size="lg"
+                      onClick={(e) => handleStartWorkout(workout, e)}
+                    >
                       <Play className="h-4 w-4 mr-2" />
                       Start This Workout
                     </Button>
@@ -179,6 +230,19 @@ const WorkoutsTab = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Workout Session Dialog */}
+      <Dialog open={workoutSessionOpen} onOpenChange={setWorkoutSessionOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
+          {selectedWorkout && (
+            <WorkoutSession
+              workout={selectedWorkout}
+              date={selectedDay}
+              onClose={handleCloseWorkoutSession}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

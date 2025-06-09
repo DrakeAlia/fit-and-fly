@@ -207,6 +207,7 @@
   input[type="text"],
   input[type="date"],
   input[type="email"],
+  input[type="number"],
   textarea,
   select {
     font-size: 16px !important;
@@ -221,6 +222,36 @@
   html {
     -webkit-overflow-scrolling: touch;
   }
+  
+  /* Fit & Fly specific mobile improvements */
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  /* Mobile-friendly cards */
+  .mobile-card {
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+  
+  /* Enhanced touch feedback for workout controls */
+  .workout-control {
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+  
+  /* Better spacing for mobile lists */
+  .mobile-list-item {
+    padding: 0.875rem;
+    border-radius: 0.5rem;
+  }
+  
+  /* Workout timer display optimization */
+  .timer-display {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -231,4 +262,128 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+
+/* Fit & Fly Brand Colors and Styling */
+:root {
+  --fitness-primary: #3b82f6; /* Blue */
+  --fitness-secondary: #8b5cf6; /* Purple */
+  --fitness-accent: #10b981; /* Green */
+  --fitness-warning: #f59e0b; /* Orange */
+  --fitness-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+}
+
+/* Brand gradients */
+.gradient-primary {
+  background: var(--fitness-gradient);
+}
+
+.text-gradient {
+  background: var(--fitness-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Workout progress indicators */
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+  fill: transparent;
+  stroke: #e5e7eb;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.progress-ring-progress {
+  fill: transparent;
+  stroke: var(--fitness-primary);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease;
+}
+
+/* Fitness card enhancements */
+.fitness-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.fitness-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+/* Habit completion animations */
+.habit-complete {
+  animation: habitSuccess 0.6s ease-out;
+}
+
+@keyframes habitSuccess {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+    background-color: #dcfce7;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Workout timer styles */
+.timer-glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+  }
+}
+
+/* Mobile gesture hints */
+.swipe-hint {
+  position: relative;
+}
+
+.swipe-hint::after {
+  content: '👈 Swipe';
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #6b7280;
+  opacity: 0.7;
+  animation: swipeHint 3s infinite;
+}
+
+@keyframes swipeHint {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+  }
+}
+
+@media (min-width: 640px) {
+  .swipe-hint::after {
+    display: none;
+  }
 }

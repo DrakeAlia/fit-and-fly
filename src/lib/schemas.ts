@@ -50,8 +50,7 @@ export const DayDataSchema = z.object({
 // Onboarding form schema
 export const OnboardingFormSchema = z.object({
   destination: z.string()
-    .min(1, 'Destination is required')
-    .regex(/^.+,\s*.+$/, 'Please enter destination as "City, Country" (e.g., "Paris, France")'),
+    .min(1, 'Please select a destination'),
   startDate: z.string().refine((date) => {
     const selectedDate = new Date(date)
     const today = new Date()
@@ -91,6 +90,43 @@ export const WorkoutPlanSchema = z.object({
   schedule: z.record(z.string(), z.string()), // date -> workout id mapping
 })
 
+// Exercise progress tracking
+export const ExerciseProgressSchema = z.object({
+  exerciseId: z.string(),
+  setNumber: z.number(),
+  repsCompleted: z.number(),
+  weight: z.number().optional(),
+  restTime: z.number().optional(), // seconds
+  completed: z.boolean(),
+  timestamp: z.string().optional(),
+})
+
+// Workout session tracking
+export const WorkoutSessionSchema = z.object({
+  id: z.string(),
+  workoutId: z.string(),
+  date: z.string(),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
+  totalDuration: z.number().optional(), // minutes
+  exerciseProgress: z.array(ExerciseProgressSchema),
+  completed: z.boolean(),
+  notes: z.string().optional(),
+})
+
+// Daily habits tracking
+export const HabitSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional(),
+  icon: z.string().optional(),
+})
+
+export const DailyHabitsSchema = z.object({
+  date: z.string(),
+  habits: z.record(z.string(), z.boolean()), // habitId -> completed
+})
+
 // Export types from schemas
 export type Equipment = z.infer<typeof EquipmentSchema>
 export type FitnessGoal = z.infer<typeof FitnessGoalSchema>
@@ -105,3 +141,7 @@ export type OnboardingFormData = z.infer<typeof OnboardingFormSchema>
 export type UserProfile = z.infer<typeof UserProfileSchema>
 export type MealSuggestionResponse = z.infer<typeof MealSuggestionSchema>
 export type WorkoutPlan = z.infer<typeof WorkoutPlanSchema>
+export type ExerciseProgress = z.infer<typeof ExerciseProgressSchema>
+export type WorkoutSession = z.infer<typeof WorkoutSessionSchema>
+export type Habit = z.infer<typeof HabitSchema>
+export type DailyHabits = z.infer<typeof DailyHabitsSchema>

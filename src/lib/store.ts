@@ -6,7 +6,10 @@ import type {
   Workout, 
   DayData, 
   UserProfile,
-  Weather
+  Weather,
+  WorkoutSession,
+  DailyHabits,
+  Habit
 } from './schemas'
 
 interface AppState {
@@ -24,6 +27,12 @@ interface AppState {
   
   // Workout state
   expandedWorkout: string | null
+  workoutSessions: WorkoutSession[]
+  currentWorkoutSession: WorkoutSession | null
+  
+  // Habits state
+  dailyHabits: DailyHabits[]
+  defaultHabits: Habit[]
   
   // Modal state
   isMealModalOpen: boolean
@@ -40,6 +49,15 @@ interface AppState {
   closeMealModal: () => void
   generateTripData: (profile: UserProfile) => void
   resetApp: () => void
+  
+  // Workout session actions
+  startWorkoutSession: (workoutId: string, date: string) => void
+  endWorkoutSession: () => void
+  updateExerciseProgress: (exerciseId: string, setNumber: number, repsCompleted: number, weight?: number) => void
+  
+  // Habits actions
+  toggleHabit: (date: string, habitId: string) => void
+  initializeDefaultHabits: () => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -53,6 +71,10 @@ export const useAppStore = create<AppState>()(
   selectedDay: '',
   tripData: [],
   expandedWorkout: null,
+  workoutSessions: [],
+  currentWorkoutSession: null,
+  dailyHabits: [],
+  defaultHabits: [],
   isMealModalOpen: false,
   selectedMealForEdit: null,
   
@@ -66,6 +88,7 @@ export const useAppStore = create<AppState>()(
       selectedDay: profile.startDate
     })
     get().generateTripData(profile)
+    get().initializeDefaultHabits()
   },
   
   setCurrentTab: (tab) => set({ currentTab: tab }),
@@ -123,9 +146,113 @@ export const useAppStore = create<AppState>()(
     selectedDay: '',
     tripData: [],
     expandedWorkout: null,
+    workoutSessions: [],
+    currentWorkoutSession: null,
+    dailyHabits: [],
+    defaultHabits: [],
     isMealModalOpen: false,
     selectedMealForEdit: null,
-  })
+  }),
+  
+  // Workout session actions
+  startWorkoutSession: (workoutId, date) => {
+    const session: WorkoutSession = {
+      id: `session-${Date.now()}`,
+      workoutId,
+      date,
+      startTime: new Date().toISOString(),
+      exerciseProgress: [],
+      completed: false
+    }
+    set({ currentWorkoutSession: session })
+  },
+  
+  endWorkoutSession: () => {
+    const { currentWorkoutSession } = get()
+    if (currentWorkoutSession) {
+      const completedSession = {
+        ...currentWorkoutSession,
+        endTime: new Date().toISOString(),
+        totalDuration: currentWorkoutSession.startTime 
+          ? Math.round((new Date().getTime() - new Date(currentWorkoutSession.startTime).getTime()) / 60000)
+          : 0,
+        completed: true
+      }
+      set(state => ({
+        workoutSessions: [...state.workoutSessions, completedSession],
+        currentWorkoutSession: null
+      }))
+    }
+  },
+  
+  updateExerciseProgress: (exerciseId, setNumber, repsCompleted, weight) => {
+    set(state => {
+      if (!state.currentWorkoutSession) return state
+      
+      const existingProgressIndex = state.currentWorkoutSession.exerciseProgress.findIndex(
+        p => p.exerciseId === exerciseId && p.setNumber === setNumber
+      )
+      
+      const newProgress = {
+        exerciseId,
+        setNumber,
+        repsCompleted,
+        weight,
+        completed: true,
+        timestamp: new Date().toISOString()
+      }
+      
+      const updatedProgress = [...state.currentWorkoutSession.exerciseProgress]
+      if (existingProgressIndex >= 0) {
+        updatedProgress[existingProgressIndex] = newProgress
+      } else {
+        updatedProgress.push(newProgress)
+      }
+      
+      return {
+        currentWorkoutSession: {
+          ...state.currentWorkoutSession,
+          exerciseProgress: updatedProgress
+        }
+      }
+    })
+  },
+  
+  // Habits actions
+  toggleHabit: (date, habitId) => {
+    set(state => {
+      const existingDayIndex = state.dailyHabits.findIndex(d => d.date === date)
+      
+      if (existingDayIndex >= 0) {
+        const updatedDailyHabits = [...state.dailyHabits]
+        updatedDailyHabits[existingDayIndex] = {
+          ...updatedDailyHabits[existingDayIndex],
+          habits: {
+            ...updatedDailyHabits[existingDayIndex].habits,
+            [habitId]: !updatedDailyHabits[existingDayIndex].habits[habitId]
+          }
+        }
+        return { dailyHabits: updatedDailyHabits }
+      } else {
+        const newDayHabits: DailyHabits = {
+          date,
+          habits: { [habitId]: true }
+        }
+        return { dailyHabits: [...state.dailyHabits, newDayHabits] }
+      }
+    })
+  },
+  
+  initializeDefaultHabits: () => {
+    const defaultHabits: Habit[] = [
+      { id: 'water', name: 'Drink 8 glasses of water', description: 'Stay hydrated throughout the day', icon: '💧' },
+      { id: 'sleep', name: 'Get 8 hours of sleep', description: 'Proper rest for recovery', icon: '😴' },
+      { id: 'stretching', name: 'Do stretching/mobility', description: 'Keep your body flexible', icon: '🧘‍♀️' },
+      { id: 'walk', name: 'Take a 10+ minute walk', description: 'Light movement for circulation', icon: '🚶‍♀️' },
+      { id: 'meditation', name: 'Practice mindfulness', description: '5+ minutes of meditation', icon: '🧠' }
+    ]
+    set({ defaultHabits })
+  }
 }),
     {
       name: 'fit-and-fly-storage',
@@ -135,6 +262,9 @@ export const useAppStore = create<AppState>()(
         userProfile: state.userProfile,
         tripData: state.tripData,
         selectedDay: state.selectedDay,
+        workoutSessions: state.workoutSessions,
+        dailyHabits: state.dailyHabits,
+        defaultHabits: state.defaultHabits,
       }),
     }
   )
