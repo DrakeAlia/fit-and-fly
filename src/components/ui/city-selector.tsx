@@ -53,7 +53,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   // Update filtered cities when search query changes
   useEffect(() => {
     const cities = searchCities(searchQuery);
-    setFilteredCities(cities.slice(0, 50)); // Limit results for performance
+    setFilteredCities(cities.slice(0, 80)); // Limit results for performance
   }, [searchQuery]);
 
   // Handle clicking outside to close dropdown
@@ -162,7 +162,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute z-50 w-full mt-3 bg-white rounded-xl shadow-2xl border border-gray-200 max-h-[500px] overflow-hidden backdrop-blur-sm"
+            className="absolute z-50 w-full mt-3 bg-white rounded-xl shadow-2xl border border-gray-200 max-h-[600px] overflow-hidden backdrop-blur-sm"
           >
             {/* Header */}
             <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
@@ -179,7 +179,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
             </div>
 
             {/* Cities List */}
-            <div className="max-h-[420px] overflow-y-auto scrollbar-hide">
+            <div className="max-h-[520px] overflow-y-auto scrollbar-hide">
               {filteredCities.length === 0 ? (
                 <div className="px-4 py-8 text-center text-gray-500">
                   <Globe className="h-8 w-8 mx-auto mb-2 text-gray-300" />

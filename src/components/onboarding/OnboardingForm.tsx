@@ -131,7 +131,7 @@ const OnboardingForm = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="space-y-8 sm:space-y-10"
+            className="space-y-10 sm:space-y-12 lg:space-y-14"
           >
             <motion.div variants={itemVariants} className="text-center space-y-2">
               <motion.div
@@ -178,6 +178,9 @@ const OnboardingForm = () => {
         )
 
       case 1:
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0]
+        
         return (
           <motion.div 
             key="step-1"
@@ -212,6 +215,7 @@ const OnboardingForm = () => {
                           <Input
                             type="date"
                             className="text-base p-3 h-12"
+                            min={today}
                             {...field}
                           />
                         </FormControl>
@@ -230,7 +234,7 @@ const OnboardingForm = () => {
                           <Input
                             type="date"
                             className="text-base p-3 h-12"
-                            min={currentValues.startDate}
+                            min={currentValues.startDate || today}
                             {...field}
                           />
                         </FormControl>
@@ -240,6 +244,12 @@ const OnboardingForm = () => {
                   />
                 </div>
               </Form>
+            </motion.div>
+            
+            <motion.div variants={itemVariants}>
+              <p className="text-sm text-gray-500 text-center">
+                Note: Past dates are not available for selection
+              </p>
             </motion.div>
           </motion.div>
         )
@@ -351,10 +361,10 @@ const OnboardingForm = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-5xl"
+        className="w-full max-w-7xl"
       >
-        <Card className="backdrop-blur-sm bg-white/95 shadow-xl border-0 overflow-hidden w-full max-w-2xl sm:max-w-4xl lg:max-w-5xl">
-          <CardHeader className="text-center pb-4 px-6 sm:px-8 lg:px-10">
+        <Card className="backdrop-blur-sm bg-white/95 shadow-xl border-0 overflow-hidden w-full max-w-3xl sm:max-w-5xl lg:max-w-6xl xl:max-w-7xl min-h-[650px]">
+          <CardHeader className="text-center pb-6 px-8 sm:px-12 lg:px-16">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -392,7 +402,7 @@ const OnboardingForm = () => {
             </motion.div>
           </CardHeader>
           
-          <CardContent className="px-6 sm:px-8 lg:px-10 pb-6 sm:pb-8">
+          <CardContent className="px-8 sm:px-12 lg:px-16 pb-8 sm:pb-12">
             <AnimatePresence mode="wait">
               {renderStep()}
             </AnimatePresence>

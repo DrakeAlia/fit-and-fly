@@ -31,6 +31,14 @@ const ItineraryTab = () => {
     })
   }
 
+  const isPastDate = (dateString: string) => {
+    const today = new Date()
+    const date = new Date(dateString)
+    today.setHours(0, 0, 0, 0)
+    date.setHours(0, 0, 0, 0)
+    return date < today
+  }
+
   if (!tripData.length) {
     return (
       <div className="space-y-6">
@@ -87,28 +95,34 @@ const ItineraryTab = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        {tripData.map((day, index) => (
-          <motion.div
-            key={day.date}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 + index * 0.05 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              variant={selectedDay === day.date ? "default" : "outline"}
-              onClick={() => setSelectedDay(day.date)}
-              className={`flex-shrink-0 min-w-[2.5rem] sm:min-w-[3rem] h-8 sm:h-10 text-sm sm:text-base ${
-                selectedDay === day.date 
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 shadow-lg" 
-                  : "hover:border-blue-300 hover:bg-blue-50"
-              }`}
+        {tripData.map((day, index) => {
+          const isPast = isPastDate(day.date)
+          return (
+            <motion.div
+              key={day.date}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 + index * 0.05 }}
+              whileHover={!isPast ? { scale: 1.05 } : undefined}
+              whileTap={!isPast ? { scale: 0.95 } : undefined}
             >
-              {new Date(day.date).getDate()}
-            </Button>
-          </motion.div>
-        ))}
+              <Button
+                variant={selectedDay === day.date ? "default" : "outline"}
+                onClick={() => !isPast && setSelectedDay(day.date)}
+                disabled={isPast}
+                className={`flex-shrink-0 min-w-[2.5rem] sm:min-w-[3rem] h-8 sm:h-10 text-sm sm:text-base transition-all ${
+                  isPast
+                    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
+                    : selectedDay === day.date 
+                      ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 shadow-lg" 
+                      : "hover:border-blue-300 hover:bg-blue-50"
+                }`}
+              >
+                {new Date(day.date).getDate()}
+              </Button>
+            </motion.div>
+          )
+        })}
       </motion.div>
 
       {/* Selected day details */}

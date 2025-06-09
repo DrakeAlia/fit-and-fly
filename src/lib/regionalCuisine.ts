@@ -218,6 +218,126 @@ export const REGIONAL_CUISINES: RegionalCuisine[] = [
 export function getRegionFromDestination(destination: string): string {
   const destinationLower = destination.toLowerCase()
   
+  // First check for exact city/country matches for more precise regional mapping
+  const citySpecificMappings: Record<string, string> = {
+    // Mediterranean region
+    'athens': 'Mediterranean',
+    'santorini': 'Mediterranean',
+    'mykonos': 'Mediterranean',
+    'crete': 'Mediterranean',
+    'sicily': 'Mediterranean',
+    'naples': 'Mediterranean',
+    'florence': 'Mediterranean',
+    'venice': 'Mediterranean',
+    'milan': 'Mediterranean',
+    'nice': 'Mediterranean',
+    'cannes': 'Mediterranean',
+    'marseille': 'Mediterranean',
+    'valencia': 'Mediterranean',
+    'seville': 'Mediterranean',
+    'ibiza': 'Mediterranean',
+    'palma': 'Mediterranean',
+    'dubrovnik': 'Mediterranean',
+    'split': 'Mediterranean',
+    'istanbul': 'Mediterranean',
+    'antalya': 'Mediterranean',
+    
+    // Enhanced Asian mapping
+    'bangkok': 'Asian',
+    'phuket': 'Asian',
+    'chiang mai': 'Asian',
+    'ho chi minh': 'Asian',
+    'hanoi': 'Asian',
+    'hoi an': 'Asian',
+    'kuala lumpur': 'Asian',
+    'penang': 'Asian',
+    'bali': 'Asian',
+    'jakarta': 'Asian',
+    'manila': 'Asian',
+    'cebu': 'Asian',
+    'hong kong': 'Asian',
+    'macau': 'Asian',
+    'taipei': 'Asian',
+    'osaka': 'Asian',
+    'kyoto': 'Asian',
+    'hiroshima': 'Asian',
+    'busan': 'Asian',
+    'jeju': 'Asian',
+    
+    // Middle Eastern
+    'dubai': 'Middle Eastern',
+    'abu dhabi': 'Middle Eastern',
+    'doha': 'Middle Eastern',
+    'kuwait city': 'Middle Eastern',
+    'riyadh': 'Middle Eastern',
+    'jeddah': 'Middle Eastern',
+    'muscat': 'Middle Eastern',
+    'manama': 'Middle Eastern',
+    'tel aviv': 'Middle Eastern',
+    'jerusalem': 'Middle Eastern',
+    'beirut': 'Middle Eastern',
+    'amman': 'Middle Eastern',
+    'cairo': 'Middle Eastern',
+    'tehran': 'Middle Eastern',
+    'isfahan': 'Middle Eastern',
+    
+    // Indian Subcontinent
+    'mumbai': 'Indian',
+    'delhi': 'Indian',
+    'bangalore': 'Indian',
+    'chennai': 'Indian',
+    'kolkata': 'Indian',
+    'pune': 'Indian',
+    'hyderabad': 'Indian',
+    'goa': 'Indian',
+    'jaipur': 'Indian',
+    'udaipur': 'Indian',
+    'agra': 'Indian',
+    'varanasi': 'Indian',
+    'kerala': 'Indian',
+    'karachi': 'Indian',
+    'lahore': 'Indian',
+    'islamabad': 'Indian',
+    'dhaka': 'Indian',
+    'chittagong': 'Indian',
+    'colombo': 'Indian',
+    'kandy': 'Indian',
+    'kathmandu': 'Indian',
+    'pokhara': 'Indian',
+    
+    // Latin American
+    'mexico city': 'Latin American',
+    'cancun': 'Latin American',
+    'playa del carmen': 'Latin American',
+    'guadalajara': 'Latin American',
+    'oaxaca': 'Latin American',
+    'rio de janeiro': 'Latin American',
+    'sao paulo': 'Latin American',
+    'salvador': 'Latin American',
+    'brasilia': 'Latin American',
+    'buenos aires': 'Latin American',
+    'mendoza': 'Latin American',
+    'bariloche': 'Latin American',
+    'bogota': 'Latin American',
+    'cartagena': 'Latin American',
+    'medellin': 'Latin American',
+    'lima': 'Latin American',
+    'cusco': 'Latin American',
+    'machu picchu': 'Latin American',
+    'santiago': 'Latin American',
+    'valparaiso': 'Latin American',
+    'caracas': 'Latin American',
+    'quito': 'Latin American'
+  }
+  
+  // Check for city-specific matches first
+  for (const [city, region] of Object.entries(citySpecificMappings)) {
+    if (destinationLower.includes(city)) {
+      return region
+    }
+  }
+  
+  // Then check for country matches
   for (const cuisine of REGIONAL_CUISINES) {
     for (const country of cuisine.countries) {
       if (destinationLower.includes(country)) {
