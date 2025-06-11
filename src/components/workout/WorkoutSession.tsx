@@ -157,7 +157,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ workout, date, onClose 
   }
 
   return (
-    <Card className="max-w-2xl mx-auto w-full">
+    <Card className="max-w-2xl mx-auto w-full min-h-0">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -174,7 +174,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ workout, date, onClose 
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 sm:space-y-6">
         <AnimatePresence mode="wait">
           {isResting ? (
             <motion.div
@@ -184,7 +184,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ workout, date, onClose 
               exit={{ opacity: 0, scale: 0.9 }}
               className="text-center space-y-4"
             >
-              <div className="text-6xl font-bold text-blue-600">
+              <div className="text-4xl sm:text-6xl font-bold text-blue-600">
                 {formatTime(restTimer)}
               </div>
               <div className="text-lg font-semibold">Rest Time</div>
@@ -203,7 +203,7 @@ const WorkoutSession: React.FC<WorkoutSessionProps> = ({ workout, date, onClose 
               {/* Current Exercise */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold">{currentExercise.name}</h3>
+                  <h3 className="text-lg sm:text-xl font-bold truncate">{currentExercise.name}</h3>
                   <Badge variant={completedSets >= totalSets ? "default" : "secondary"}>
                     Set {currentSet} of {totalSets}
                   </Badge>

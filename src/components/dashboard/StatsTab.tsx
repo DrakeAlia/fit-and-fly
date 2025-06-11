@@ -18,7 +18,7 @@ interface CircularProgressProps {
 const CircularProgress: React.FC<CircularProgressProps> = ({
   value,
   max,
-  size = 120,
+  size = 100,
   strokeWidth = 8,
   color = '#3b82f6',
   label,
@@ -69,7 +69,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
         </svg>
         {/* Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xl font-bold" style={{ color }}>
+          <span className="text-lg sm:text-xl font-bold" style={{ color }}>
             {Math.round(value)}
           </span>
           <span className="text-xs text-gray-500">/ {max}{unit}</span>
@@ -101,15 +101,16 @@ const StatsTab = () => {
   return (
     <div className="space-y-6">
       {/* Today's Progress */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="text-center">Today&apos;s Progress</CardTitle>
           </CardHeader>
-          <CardContent className="flex justify-center">
+          <CardContent className="flex justify-center p-4">
             <CircularProgress
               value={selectedDayData.totalCalories}
               max={userProfile.calorieGoal}
+              size={90}
               color="#f59e0b"
               label="Calories"
               unit=""
@@ -121,10 +122,11 @@ const StatsTab = () => {
           <CardHeader>
             <CardTitle className="text-center">Protein Intake</CardTitle>
           </CardHeader>
-          <CardContent className="flex justify-center">
+          <CardContent className="flex justify-center p-4">
             <CircularProgress
               value={selectedDayData.totalProtein}
               max={userProfile.proteinGoal}
+              size={90}
               color="#10b981"
               label="Protein"
               unit="g"
@@ -136,10 +138,11 @@ const StatsTab = () => {
           <CardHeader>
             <CardTitle className="text-center">Workout Completion</CardTitle>
           </CardHeader>
-          <CardContent className="flex justify-center">
+          <CardContent className="flex justify-center p-4">
             <CircularProgress
               value={100}
               max={100}
+              size={90}
               color="#8b5cf6"
               label="Workout"
               unit="%"
@@ -149,7 +152,7 @@ const StatsTab = () => {
       </div>
 
       {/* Trip Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -244,7 +247,7 @@ const StatsTab = () => {
           <CardTitle>Weekly Overview</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1 sm:gap-2">
             {tripData.slice(0, 7).map((day) => {
               const dayCalorieProgress = (day.totalCalories / userProfile.calorieGoal) * 100
               const dayProteinProgress = (day.totalProtein / userProfile.proteinGoal) * 100

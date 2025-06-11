@@ -62,8 +62,8 @@ const WorkoutsTab = () => {
     <div className="space-y-4 sm:space-y-6">
       <div className="text-center mb-4 sm:mb-6 px-2">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Your Workout Plan</h2>
-        <p className="text-gray-600 text-sm sm:text-base">
-          Customized workouts based on your goals and available equipment
+        <p className="text-gray-600 text-sm sm:text-base px-2">
+          Workouts for your goals & equipment
         </p>
       </div>
 
@@ -81,16 +81,16 @@ const WorkoutsTab = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <CardTitle className="text-base sm:text-lg truncate">{workout.name}</CardTitle>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 mt-1">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {workout.duration} min
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 mt-1">
+                      <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded">
+                        <Clock className="h-3 w-3" />
+                        {workout.duration}min
                       </span>
-                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
                         {workout.type}
                       </span>
-                      <span className="text-xs hidden sm:inline">
-                        Scheduled: {formatDates(workout.dates)}
+                      <span className="text-xs hidden lg:inline bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                        {formatDates(workout.dates)}
                       </span>
                     </div>
                   </div>
@@ -233,7 +233,7 @@ const WorkoutsTab = () => {
 
       {/* Workout Session Dialog */}
       <Dialog open={workoutSessionOpen} onOpenChange={setWorkoutSessionOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto w-[98vw] sm:w-[95vw] md:w-full p-2 sm:p-6">
           {selectedWorkout && (
             <WorkoutSession
               workout={selectedWorkout}

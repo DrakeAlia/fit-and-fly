@@ -262,7 +262,7 @@ const ItineraryTab = () => {
               >
                 <Card className="h-full bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-shadow">
                   <CardHeader className="pb-3">
-                    <CardTitle className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <CardTitle className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         <motion.div
                           whileHover={{ scale: 1.2, rotate: 15 }}
@@ -270,9 +270,9 @@ const ItineraryTab = () => {
                         >
                           <Utensils className="h-5 w-5 text-green-500" />
                         </motion.div>
-                        Today&apos;s Meals
+                        <span className="text-sm sm:text-base">Today&apos;s Meals</span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-1 sm:gap-2 flex-wrap">
                         <Badge variant="outline" className="text-xs">
                           {day.totalCalories} cal
                         </Badge>
@@ -306,7 +306,7 @@ const ItineraryTab = () => {
                               >
                                 {meal.type}
                               </Badge>
-                              <h4 className="font-medium text-gray-800">{meal.name}</h4>
+                              <h4 className="font-medium text-gray-800 text-sm sm:text-base truncate">{meal.name}</h4>
                             </div>
                             <div className="text-sm text-gray-600">
                               {meal.calories} cal • {meal.protein}g protein

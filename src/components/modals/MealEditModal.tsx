@@ -117,7 +117,7 @@ const MealEditModal = () => {
 
   return (
     <Dialog open={isMealModalOpen} onOpenChange={(open) => !open && closeMealModal()}>
-      <DialogContent onClose={closeMealModal} className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent onClose={closeMealModal} className="max-w-2xl max-h-[85vh] overflow-y-auto w-[98vw] sm:w-[95vw] md:w-full p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ChefHat className="h-5 w-5 text-orange-500" />
@@ -125,7 +125,7 @@ const MealEditModal = () => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Current Meal */}
           <div>
             <h3 className="font-semibold mb-3">Current Selection</h3>
@@ -241,7 +241,7 @@ const MealEditModal = () => {
                               <div className="text-sm text-gray-600 mt-1">
                                 {suggestion.calories} calories • {suggestion.protein}g protein
                               </div>
-                              <div className="flex flex-wrap gap-2 mt-2">
+                              <div className="flex flex-wrap gap-1 sm:gap-2 mt-2">
                                 {suggestion.calories !== currentMeal.calories && (
                                   <Badge 
                                     variant="secondary"
